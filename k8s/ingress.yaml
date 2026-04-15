@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: smartfleet-ingress
+spec:
+  rules:
+  - host: smartfleet.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: smartfleet-gateway
+            port:
+              number: 8000
+  - host: smartfleet-ui.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: smartfleet-dashboard
+            port:
+              number: 8501
