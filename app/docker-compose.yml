@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+
+  gateway:
+    build: .
+    container_name: smartfleet-gateway
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+
+  generator:
+    build: .
+    container_name: smartfleet-generator
+    command: python app/generator.py
+    depends_on:
+      - gateway
+    environment:
+      - GATEWAY_URL=http://gateway:8000/telemetry
+
+  dashboard:
+    build: .
+    container_name: smartfleet-dashboard
+    command: streamlit run app/dashboard.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      - gateway
+    environment:
+      - GATEWAY_URL=http://gateway:8000
